@@ -1,0 +1,37 @@
+Archive Builder 1.0.0 source validation
+Date: 2026-11-11
+
+Source basis
+- Combined the supplied archive-builder-main(1).zip with the supplied archive-builder-v0.1.3-patch(1).zip, applying the patch over matching base files.
+- Launch work changes release metadata, documentation, source layout, build checks, CLI version output, GUI layout, and Linux dependency discovery. Acquisition/extraction/database/deduplication/export algorithms and schema v3 are retained from the supplied patch.
+- Existing project settings and paths are preserved. No Scout downloader changes were imported.
+
+Environment
+- Linux x86_64, Python 3.12.14, Tcl/Tk 9.0.4, PyInstaller 6.21.0.
+- pytest 9.2.0, httpx 0.28.1, BeautifulSoup 4.15.0, python-dateutil 2.9.0.post0, openpyxl 3.1.5.
+- Source tests run in an isolated virtual environment with the container-specific HTTP_PROXY/HTTPS_PROXY/ALL_PROXY variables removed; no test contacts Wayback. This does not validate optional SOCKS proxy support.
+- GUI checks use Xvfb at 1280x900. Native OS appearance and font rendering can differ.
+
+Checks completed
+1. Combined pre-launch baseline: 58 passed.
+2. Final full suite: python -m pytest -q -> 60 passed in 1.78 seconds, zero failures/skips. This includes existing CDX paging/resume, malformed/repeated responses, opaque tokens, 429/503 pauses, stop/retry behavior, schema migration/backup, bounded executor submission, staged-capture adoption, local re-extraction, provenance/content classification, field rules, partial dates, chronology, duplicate decisions, CSV quoting, and XLSX layout tests. Two launch regressions additionally check CLI version output and matching/mismatched release tags.
+3. python scripts/verify_release.py --tag v1.0.0 -> pass. A mismatched v0.1.3 tag is rejected with exit 1.
+4. python -m compileall -q archive_builder tests scripts run_app.py run_cli.py -> pass.
+5. Both GitHub Actions workflow files parse as YAML. All shell scripts pass bash -n; Linux/macOS workflow shell blocks pass bash syntax checking. PowerShell/native action execution is not established by those checks.
+6. Python wheel builds as archive_builder-1.0.0-py3-none-any.whl. Bundled Python sources are compared byte-for-byte with the release source and installed CLI/GUI module imports are checked.
+7. Linux GUI and CLI are built using the repository's scripts/build_linux.sh and pinned PyInstaller. The final build has no unresolved Tcl/Tk library warnings. The initial frozen GUI test exposed missing libraries in this relocated Python installation; adding the selected Python's base lib directory to build-time dependency discovery corrected the package. This change was verified by rebuilding, not by relying on an external runtime library path.
+8. Built and archive-extracted Linux GUI startup probes return exit 0 under Xvfb, with ARCHIVE_BUILDER_STARTUP_PROBE=1. Archive SHA-256 matches its checksum file.
+9. Source GUI smoke: v1.0.0 title, five tabs, all three wizard pages, New Project flow, save/reload settings, status-bar visibility, and Site & Build scroll access at 1120x760 and 960x680 -> pass. Visual inspection identified the old clipping; the final layout preserves the status bar and exposes the bottom controls through scrolling.
+10. Archive-extracted Linux CLI smoke, executed outside the source tree: --help, --version, init custom profile in a Unicode/space-containing project path, extract two saved HTML fixtures, dedupe, export CSV and XLSX, repeat extract -> pass. CSV has exactly seven columns and newest-first real dates; Unicode and First Capture Date survive. XLSX Data/Reading sheets exist, source hashes remain unchanged, and repeat extraction reports no pending work. This is a saved-fixture integration test, not a live replay test.
+11. The actual macOS plist-writing block runs against a synthetic plist: both version fields become 1.0.0, bundle identifier and minimum OS are set, and the executable field is preserved. This does not establish a working macOS package.
+12. Final source archive is checked for ZIP integrity, unsafe paths, cache/build/project-data exclusion, canonical .github/.gitignore layout, and byte equality to the prepared repository.
+
+Not verified here
+- Hosted GitHub Actions matrix or Ubuntu 22.04 packages. Local Linux packaging uses this container's Python 3.12/Tcl 9; hosted builds use Python 3.11 and their selected runtime.
+- Native Windows and macOS GUI/CLI packages; Universal2 slices, code signing, Intel/Apple Silicon launch, and macOS 12 compatibility.
+- Native install/uninstall helpers, trusted-publisher signing, or Apple notarization.
+- Live Wayback indexing/replay, coverage of a real site, transient network recovery against the live service, multi-million-page resource use, or overnight throughput. No performance improvement or completed-save rate is claimed by this launch.
+- Google Sheets import or visual acceptance in Excel/LibreOffice.
+- Remote publication or availability of the three download assets. The launch links target Memory-of-Time/archive-builder and activate when a release is published there.
+
+See UPLOAD_CHECKLIST.txt for native/live checks and publication steps. Historical v0.1.3 measurements are kept separately in docs/history/ and are not new v1.0.0 evidence.

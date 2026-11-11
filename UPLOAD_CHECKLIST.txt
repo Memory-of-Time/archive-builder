@@ -1,0 +1,17 @@
+ARCHIVE BUILDER 1.0.0 RELEASE CHECKLIST
+
+1. Upload the CONTENTS of archive-builder-v1.0.0/ to the repository root. Do not nest that folder inside the repository. Include .github/ and .gitignore.
+2. Remove obsolete root github/ and gitignore aliases, PATCH_MANIFEST_v0.1.3.txt, and the old root IMPLEMENTATION_REPORT_v0.1.3.md if updating an existing checkout. The historical report is now under docs/history/.
+3. Confirm the repository is Memory-of-Time/archive-builder; update the repository URLs if publishing elsewhere.
+4. Read SOURCE_VALIDATION.txt. It distinguishes completed checks from work still requiring native or live verification.
+5. Install dependencies with python -m pip install -e ".[dev]".
+6. Run python scripts/verify_release.py --tag v1.0.0, python -m compileall -q archive_builder tests scripts run_app.py run_cli.py, and python -m pytest -q.
+7. Confirm the Tests workflow passes on its complete operating-system/Python matrix.
+8. Run Build All Platforms on the NEW commit. Manual dispatch creates Actions artifacts without publishing a release. Download and inspect all three packages and checksums.
+9. Smoke-test the packaged GUI/CLI and optional install/uninstall helpers on the relevant native systems. macOS should be checked on Intel and Apple Silicon.
+10. On a COPY of an older project, verify migration backup, saved settings, source reuse, duplicate review, and exports. v0.1.3/schema-v3 projects need no schema upgrade.
+11. Run a bounded live project: Preview, Index, Build All, Stop/reopen, local Extract Fields, duplicate review, CSV, and optional XLSX. Verify actual fields and capture provenance rather than treating HTTP 200 as sufficient.
+12. Confirm First Capture Date scope, partial-date precision, true chronological ordering, Unicode/multiline CSV values, and exactly seven logical output columns. Verify Google Sheets import if that is part of the launch acceptance.
+13. Confirm no project databases, captures, credentials, caches, build output, or virtual environments are included in the source commit.
+14. Tag the validated commit v1.0.0 and push that tag when ready to publish. A tag/source mismatch is rejected.
+15. Confirm all three platform assets and their SHA-256 files appear on the release and that the README download links resolve. Nothing is published merely by unpacking this source repository.

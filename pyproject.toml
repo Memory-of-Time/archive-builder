@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "archive-builder"
+version = "1.0.0"
+description = "Build structured chronological datasets from archived websites using the Wayback Machine"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Archive Builder contributors"}]
+dependencies = [
+  "httpx>=0.28,<1",
+  "beautifulsoup4>=4.12,<5",
+  "python-dateutil>=2.9,<3",
+  "openpyxl>=3.1,<4",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: MacOS X",
+  "Environment :: Win32 (MS Windows)",
+  "Environment :: X11 Applications",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/Memory-of-Time/archive-builder"
+Repository = "https://github.com/Memory-of-Time/archive-builder"
+Issues = "https://github.com/Memory-of-Time/archive-builder/issues"
+Releases = "https://github.com/Memory-of-Time/archive-builder/releases"
+
+[project.scripts]
+archive-builder = "archive_builder.cli:main"
+
+[project.gui-scripts]
+archive-builder-gui = "archive_builder.app:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "PyYAML>=6,<7"]
+
+[tool.setuptools.packages.find]
+include = ["archive_builder*"]
